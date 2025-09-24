@@ -1,15 +1,37 @@
+import 'package:bhan_wa_ra/note_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class NewNote extends StatelessWidget {
+import 'package:provider/provider.dart';
+
+class NewNote extends StatefulWidget {
   const NewNote({super.key, required this.title});
 
   final String title;
 
   @override
+  State<NewNote> createState() => _NewNoteState();
+}
+
+class _NewNoteState extends State<NewNote> {
+  @override
+  var titleController = TextEditingController();
+  var contentController = TextEditingController();
+
+  void initState() {
+    super.initState();
+    titleController = TextEditingController();
+    contentController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    contentController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final titleController = TextEditingController();
-    final contentController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -140,6 +162,19 @@ class NewNote extends StatelessWidget {
                   maxLines: null,
                 ),
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                Provider.of<NoteState>(
+                  context,
+                  listen: false,
+                ).addNewNote(titleController.text, contentController.text);
+              },
+              icon: Icon(Icons.note_add),
+              label: Text("Save"),
             ),
           ),
         ],
