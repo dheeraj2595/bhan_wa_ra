@@ -53,8 +53,8 @@ class MainPageState extends State<MainPage> {
   final List<WidgetBuilder> pages = [
     (context) => MyHomePage(title: 'home'),
     (context) => CategoryPage(title: 'category'),
-    (context) => VaultPage(title: 'vault'),
     (context) => NewNote(title: 'New note'),
+    (context) => VaultPage(title: 'vault'),
   ];
 
   void _onItemTapped(int index) {
@@ -141,7 +141,7 @@ class MainPageState extends State<MainPage> {
       ),
       body: pages[_selectedIndex](context),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
+        currentIndex: _selectedIndex > 2 ? 0 : _selectedIndex,
         onTap: _onItemTapped,
         selectedItemColor: Colors.amber,
         unselectedItemColor: Colors.grey,
