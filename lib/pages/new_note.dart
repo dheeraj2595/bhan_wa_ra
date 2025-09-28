@@ -2,6 +2,7 @@ import 'package:bhan_wa_ra/note_state.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:bhan_wa_ra/pages/category_list.dart';
 
 class NewNote extends StatefulWidget {
   const NewNote({super.key, required this.title});
@@ -16,6 +17,7 @@ class _NewNoteState extends State<NewNote> {
   @override
   var titleController = TextEditingController();
   var contentController = TextEditingController();
+  String selectedCategory = "Anaesthesia";
 
   void initState() {
     super.initState();
@@ -104,18 +106,44 @@ class _NewNoteState extends State<NewNote> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                Provider.of<NoteState>(
-                  context,
-                  listen: false,
-                ).addNewNote(titleController.text, contentController.text);
-              },
-              icon: Icon(Icons.note_add),
-              label: Text("Save"),
-            ),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FloatingActionButton.extended(
+                  onPressed: () {
+                    Provider.of<NoteState>(context, listen: false).addNewNote(
+                      titleController.text,
+                      contentController.text,
+                      selectedCategory,
+                    );
+                  },
+                  icon: Icon(Icons.note_add),
+                  label: Text("Save"),
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Builder(
+                  builder: (context) {
+                    return FloatingActionButton.extended(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                CategoryListPage(title: 'Select category'),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.category_sharp),
+                      label: Text("Category - $selectedCategory"),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ],
       ),

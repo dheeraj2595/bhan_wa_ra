@@ -5,11 +5,15 @@ import 'pages/categories.dart';
 import 'pages/vault.dart';
 import 'pages/new_note.dart';
 import 'package:bhan_wa_ra/note_state.dart';
+import 'package:bhan_wa_ra/pages/category_list.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => NoteState())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => NoteState()),
+        ChangeNotifierProvider(create: (_) => CategoryState()),
+      ],
       child: MyApp(),
     ),
   );
@@ -36,6 +40,8 @@ class MyApp extends StatelessWidget {
         '/category': (context) => CategoryPage(title: 'category'),
         '/new-note': (context) => NewNote(title: 'New note'),
         '/vault': (context) => VaultPage(title: 'vault'),
+        '/all-categories': (context) =>
+            CategoryListPage(title: 'All categories'),
       },
     );
   }
@@ -55,6 +61,7 @@ class MainPageState extends State<MainPage> {
     (context) => CategoryPage(title: 'category'),
     (context) => NewNote(title: 'New note'),
     (context) => VaultPage(title: 'vault'),
+    (context) => CategoryListPage(title: 'All categories'),
   ];
 
   void _onItemTapped(int index) {
@@ -120,6 +127,15 @@ class MainPageState extends State<MainPage> {
               title: Text("Categories"),
               onTap: () {
                 _onItemTapped(1);
+
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: CircleAvatar(child: Icon(Icons.category_outlined)),
+              title: Text("All categories"),
+              onTap: () {
+                _onItemTapped(4);
 
                 Navigator.pop(context);
               },
