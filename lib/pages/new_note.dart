@@ -129,13 +129,7 @@ class _NewNoteState extends State<NewNote> {
                   builder: (context) {
                     return FloatingActionButton.extended(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                CategoryListPage(title: 'Select category'),
-                          ),
-                        );
+                        context.read<pageChangeState>().selectCategory();
                       },
                       icon: Icon(Icons.category_sharp),
                       label: Text("Category - $selectedCategory"),

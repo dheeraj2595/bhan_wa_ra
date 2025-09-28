@@ -13,6 +13,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => NoteState()),
         ChangeNotifierProvider(create: (_) => CategoryState()),
+        ChangeNotifierProvider(create: (_) => pageChangeState()),
       ],
       child: MyApp(),
     ),
@@ -47,31 +48,13 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-  @override
-  MainPageState createState() => MainPageState();
-}
-
-class MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
-
-  final List<WidgetBuilder> pages = [
-    (context) => MyHomePage(title: 'home'),
-    (context) => CategoryPage(title: 'category'),
-    (context) => NewNote(title: 'New note'),
-    (context) => VaultPage(title: 'vault'),
-    (context) => CategoryListPage(title: 'All categories'),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+class MainPage extends StatelessWidget {
+  MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final pageChange = context.watch<pageChangeState>();
+    final selectedIndex = pageChange.selectedIndex;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -118,7 +101,7 @@ class MainPageState extends State<MainPage> {
               leading: CircleAvatar(child: Icon(Icons.sticky_note_2_outlined)),
               title: Text("All notes"),
               onTap: () {
-                _onItemTapped(0);
+                pageChange.onItemTapped(0);
                 Navigator.pop(context);
               },
             ),
@@ -126,7 +109,7 @@ class MainPageState extends State<MainPage> {
               leading: CircleAvatar(child: Icon(Icons.category_outlined)),
               title: Text("Categories"),
               onTap: () {
-                _onItemTapped(1);
+                pageChange.onItemTapped(1);
 
                 Navigator.pop(context);
               },
@@ -135,7 +118,7 @@ class MainPageState extends State<MainPage> {
               leading: CircleAvatar(child: Icon(Icons.category_outlined)),
               title: Text("All categories"),
               onTap: () {
-                _onItemTapped(4);
+                pageChange.onItemTapped(4);
 
                 Navigator.pop(context);
               },
@@ -144,7 +127,7 @@ class MainPageState extends State<MainPage> {
               leading: CircleAvatar(child: Icon(Icons.lock_clock_outlined)),
               title: Text("Vault"),
               onTap: () {
-                _onItemTapped(3);
+                pageChange.onItemTapped(3);
                 Navigator.pop(context);
               },
             ),
@@ -155,10 +138,10 @@ class MainPageState extends State<MainPage> {
           ],
         ),
       ),
-      body: pages[_selectedIndex](context),
+      body: pageChange.pages[selectedIndex](context),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex > 2 ? 0 : _selectedIndex,
-        onTap: _onItemTapped,
+        currentIndex: selectedIndex > 2 ? 0 : selectedIndex,
+        onTap: pageChange.onItemTapped,
         selectedItemColor: Colors.amber,
         unselectedItemColor: Colors.grey,
         items: const [

@@ -1,5 +1,11 @@
+import 'package:bhan_wa_ra/pages/category_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:bhan_wa_ra/main.dart';
+import 'package:bhan_wa_ra/pages/home_page.dart';
+import 'package:bhan_wa_ra/pages/categories.dart';
+import 'package:bhan_wa_ra/pages/vault.dart';
+import 'package:bhan_wa_ra/pages/new_note.dart';
 
 class Note {
   String title = "";
@@ -32,6 +38,7 @@ class CategoryState extends ChangeNotifier {
   List<category> surgicalSuperSpecialityCategories = [];
   List<category> anaesthesiaSuperSpecialityCategories = [];
   List<category> subCategories = [];
+  String selectedCategory = "Anaesthesia";
 
   void loadCoreMasterCategories() {
     coreMasterCategories = [
@@ -144,4 +151,35 @@ class CategoryState extends ChangeNotifier {
   }
 
   notifyListeners();
+
+  void selectCategory(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CategoryListPage(title: 'Select category'),
+      ),
+    );
+  }
+}
+
+class pageChangeState extends ChangeNotifier {
+  int selectedIndex = 0;
+
+  final List<WidgetBuilder> pages = [
+    (context) => MyHomePage(title: 'home'),
+    (context) => CategoryPage(title: 'category'),
+    (context) => NewNote(title: 'New note'),
+    (context) => VaultPage(title: 'vault'),
+    (context) => CategoryListPage(title: 'All categories'),
+  ];
+
+  void onItemTapped(int index) {
+    selectedIndex = index;
+    notifyListeners();
+  }
+
+  void selectCategory() {
+    selectedIndex = 4;
+    notifyListeners();
+  }
 }
