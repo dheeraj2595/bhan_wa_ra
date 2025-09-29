@@ -1,8 +1,6 @@
 import 'package:bhan_wa_ra/note_state.dart';
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-import 'package:bhan_wa_ra/pages/category_list.dart';
 
 class NewNote extends StatefulWidget {
   const NewNote({super.key, required this.title});
@@ -17,7 +15,6 @@ class _NewNoteState extends State<NewNote> {
   @override
   var titleController = TextEditingController();
   var contentController = TextEditingController();
-  String selectedCategory = "Anaesthesia";
 
   void initState() {
     super.initState();
@@ -34,6 +31,7 @@ class _NewNoteState extends State<NewNote> {
 
   @override
   Widget build(BuildContext context) {
+    String selectedCategory = context.read<CategoryState>().selectedCategory;
     return Scaffold(
       body: Column(
         children: [
@@ -129,7 +127,7 @@ class _NewNoteState extends State<NewNote> {
                   builder: (context) {
                     return FloatingActionButton.extended(
                       onPressed: () {
-                        context.read<pageChangeState>().selectCategory();
+                        context.read<PageChangeState>().selectCategory();
                       },
                       icon: Icon(Icons.category_sharp),
                       label: Text("Category - $selectedCategory"),

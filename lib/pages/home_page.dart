@@ -1,5 +1,4 @@
 import 'package:bhan_wa_ra/note_state.dart';
-import 'package:bhan_wa_ra/pages/categories.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

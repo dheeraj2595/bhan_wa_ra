@@ -13,7 +13,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => NoteState()),
         ChangeNotifierProvider(create: (_) => CategoryState()),
-        ChangeNotifierProvider(create: (_) => pageChangeState()),
+        ChangeNotifierProvider(create: (_) => PageChangeState()),
       ],
       child: MyApp(),
     ),
@@ -49,11 +49,11 @@ class MyApp extends StatelessWidget {
 }
 
 class MainPage extends StatelessWidget {
-  MainPage({super.key});
+  const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final pageChange = context.watch<pageChangeState>();
+    final pageChange = context.watch<PageChangeState>();
     final selectedIndex = pageChange.selectedIndex;
     return Scaffold(
       appBar: AppBar(

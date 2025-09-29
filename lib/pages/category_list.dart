@@ -34,7 +34,10 @@ class CategoryListPage extends StatelessWidget {
             ),
           ),
           onTap: () {
-            // handle tap here
+            if (context.read<PageChangeState>().selectionOfCategory == true) {
+              context.read<CategoryState>().thisCategory(cat.categoryName);
+              context.read<PageChangeState>().selectionOfCategory = false;
+            }
           },
         );
       }).toList(),

@@ -1,7 +1,5 @@
 import 'package:bhan_wa_ra/pages/category_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
-import 'package:bhan_wa_ra/main.dart';
 import 'package:bhan_wa_ra/pages/home_page.dart';
 import 'package:bhan_wa_ra/pages/categories.dart';
 import 'package:bhan_wa_ra/pages/vault.dart';
@@ -150,20 +148,17 @@ class CategoryState extends ChangeNotifier {
     loadAnaesthesiaSuperspecialityCategories();
   }
 
-  notifyListeners();
-
-  void selectCategory(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => CategoryListPage(title: 'Select category'),
-      ),
-    );
+  void thisCategory(String categoryName) {
+    selectedCategory = categoryName;
+    notifyListeners();
   }
+
+  notifyListeners();
 }
 
-class pageChangeState extends ChangeNotifier {
+class PageChangeState extends ChangeNotifier {
   int selectedIndex = 0;
+  bool selectionOfCategory = false;
 
   final List<WidgetBuilder> pages = [
     (context) => MyHomePage(title: 'home'),
@@ -179,6 +174,7 @@ class pageChangeState extends ChangeNotifier {
   }
 
   void selectCategory() {
+    selectionOfCategory = true;
     selectedIndex = 4;
     notifyListeners();
   }
