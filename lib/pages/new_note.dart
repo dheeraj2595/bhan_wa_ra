@@ -1,6 +1,7 @@
 import 'package:bhan_wa_ra/note_state.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class NewNote extends StatefulWidget {
   const NewNote({super.key, required this.title});
@@ -13,25 +14,11 @@ class NewNote extends StatefulWidget {
 
 class _NewNoteState extends State<NewNote> {
   @override
-  var titleController = TextEditingController();
-  var contentController = TextEditingController();
-
-  void initState() {
-    super.initState();
-    titleController = TextEditingController();
-    contentController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    contentController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     String selectedCategory = context.read<CategoryState>().selectedCategory;
+    var titleController = context.read<PageChangeState>().titleController;
+    var contentController = context.read<PageChangeState>().contentController;
+
     return Scaffold(
       body: Column(
         children: [
@@ -88,54 +75,66 @@ class _NewNoteState extends State<NewNote> {
             indent: 5,
             endIndent: 5,
           ),
+          QuillSimpleToolbar(
+            controller: contentController,
+            config: const QuillSimpleToolbarConfig(multiRowsDisplay: false),
+          ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: SingleChildScrollView(
-                child: TextField(
-                  controller: contentController,
-                  decoration: const InputDecoration(
-                    hintText: 'Start typing your note...',
-                    border: InputBorder.none,
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: null,
+              padding: const EdgeInsets.all(8.0),
+              child: QuillEditor.basic(
+                controller: contentController,
+                config: QuillEditorConfig(
+                  placeholder: 'Note goes here...',
+                  scrollable: true,
+                  autoFocus: true,
+                  expands: true,
+                  padding: EdgeInsets.zero,
                 ),
               ),
             ),
           ),
-          Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: FloatingActionButton.extended(
-                  onPressed: () {
-                    Provider.of<NoteState>(context, listen: false).addNewNote(
-                      titleController.text,
-                      contentController.text,
-                      selectedCategory,
-                    );
-                  },
-                  icon: Icon(Icons.note_add),
-                  label: Text("Save"),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: FloatingActionButton.extended(
+                    onPressed: () {
+                      Provider.of<NoteState>(context, listen: false).addNewNote(
+                        titleController.text,
+                        contentController.document.toPlainText(),
+                        selectedCategory,
+                      );
+                    },
+                    icon: Icon(Icons.note_alt_rounded),
+                    label: Text("Save"),
+                  ),
                 ),
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Builder(
-                  builder: (context) {
-                    return FloatingActionButton.extended(
-                      onPressed: () {
-                        context.read<PageChangeState>().selectCategory();
-                      },
-                      icon: Icon(Icons.category_sharp),
-                      label: Text("Category - $selectedCategory"),
-                    );
-                  },
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Builder(
+                    builder: (context) {
+                      return FloatingActionButton.extended(
+                        onPressed: () {
+                          context.read<PageChangeState>().selectCategory();
+                        },
+                        icon: Icon(Icons.category_sharp),
+                        label: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          child: Text(
+                            "Category - $selectedCategory",
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

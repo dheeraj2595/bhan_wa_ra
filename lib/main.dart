@@ -6,6 +6,8 @@ import 'pages/vault.dart';
 import 'pages/new_note.dart';
 import 'package:bhan_wa_ra/note_state.dart';
 import 'package:bhan_wa_ra/pages/category_list.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 void main() {
   runApp(
@@ -35,6 +37,14 @@ class MyApp extends StatelessWidget {
           secondary: Colors.black, // for contrast
         ),
       ),
+
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        FlutterQuillLocalizations.delegate,
+      ],
+
       home: MainPage(),
       routes: {
         '/home': (context) => MyHomePage(title: 'home'),

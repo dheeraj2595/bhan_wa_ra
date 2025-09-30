@@ -4,6 +4,7 @@ import 'package:bhan_wa_ra/pages/home_page.dart';
 import 'package:bhan_wa_ra/pages/categories.dart';
 import 'package:bhan_wa_ra/pages/vault.dart';
 import 'package:bhan_wa_ra/pages/new_note.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class Note {
   String title = "";
@@ -159,6 +160,9 @@ class CategoryState extends ChangeNotifier {
 class PageChangeState extends ChangeNotifier {
   int selectedIndex = 0;
   bool selectionOfCategory = false;
+  var titleController = TextEditingController();
+  var contentController = QuillController.basic();
+  Note temp = Note(title: "", content: "", category: "");
 
   final List<WidgetBuilder> pages = [
     (context) => MyHomePage(title: 'home'),
@@ -170,12 +174,28 @@ class PageChangeState extends ChangeNotifier {
 
   void onItemTapped(int index) {
     selectedIndex = index;
+    if (index == 2) {
+      titleController.clear();
+      contentController = QuillController.basic();
+    }
     notifyListeners();
   }
 
   void selectCategory() {
     selectionOfCategory = true;
     selectedIndex = 4;
+    notifyListeners();
+  }
+
+  void tempNote(String title, String content) {
+    temp.title = title;
+    temp.content = content;
+    notifyListeners();
+  }
+
+  void newNotePage() {
+    selectedIndex = 2;
+
     notifyListeners();
   }
 }

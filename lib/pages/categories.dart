@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:bhan_wa_ra/note_state.dart';
+import 'package:provider/provider.dart';
 
 class CategoryPage extends StatelessWidget {
   const CategoryPage({super.key, required this.title});
@@ -43,11 +45,13 @@ class CategoryPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: ListView.builder(
-                itemCount: 10,
+                itemCount: context.read<NoteState>().notes.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     leading: Icon(Icons.access_alarm),
-                    title: Text("Item ${index + 1}"),
+                    title: Text(
+                      context.read<NoteState>().notes[index].category,
+                    ),
                   );
                 },
               ),
