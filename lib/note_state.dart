@@ -10,8 +10,14 @@ class Note {
   String title = "";
   String content = "";
   String category = "";
+  String categoryIcon = "";
 
-  Note({required this.title, required this.content, required this.category});
+  Note({
+    required this.title,
+    required this.content,
+    required this.category,
+    required this.categoryIcon,
+  });
 }
 
 class category {
@@ -23,10 +29,36 @@ class category {
 
 class NoteState extends ChangeNotifier {
   List<Note> notes = [];
+  List<category> categoriesUsed = [];
+  Map<String, List<Note>> notesByCategory = {};
 
-  void addNewNote(String title, String content, String category) {
-    notes.add(Note(title: title, content: content, category: category));
+  void addNewNote(
+    String title,
+    String content,
+    String category,
+    String selectedCategoryIcon,
+  ) {
+    notes.add(
+      Note(
+        title: title,
+        content: content,
+        category: category,
+        categoryIcon: selectedCategoryIcon,
+      ),
+    );
+    notesByCategory = getNotesByCategory(notes);
     notifyListeners();
+  }
+
+  Map<String, List<Note>> getNotesByCategory(List<Note> notes) {
+    Map<String, List<Note>> notesByCategory = {};
+    for (var Note in notes) {
+      if (!notesByCategory.containsKey(Note.category)) {
+        notesByCategory[Note.category] = [];
+      }
+      notesByCategory[Note.category]!.add(Note);
+    }
+    return notesByCategory;
   }
 }
 
@@ -38,6 +70,7 @@ class CategoryState extends ChangeNotifier {
   List<category> anaesthesiaSuperSpecialityCategories = [];
   List<category> subCategories = [];
   String selectedCategory = "Anaesthesia";
+  String selectedCategoryIcon = "💉";
 
   void loadCoreMasterCategories() {
     coreMasterCategories = [
@@ -149,8 +182,9 @@ class CategoryState extends ChangeNotifier {
     loadAnaesthesiaSuperspecialityCategories();
   }
 
-  void thisCategory(String categoryName) {
+  void thisCategory(String categoryName, String categoryIcon) {
     selectedCategory = categoryName;
+    selectedCategoryIcon = categoryIcon;
     notifyListeners();
   }
 
@@ -162,7 +196,7 @@ class PageChangeState extends ChangeNotifier {
   bool selectionOfCategory = false;
   var titleController = TextEditingController();
   var contentController = QuillController.basic();
-  Note temp = Note(title: "", content: "", category: "");
+  Note temp = Note(title: "", content: "", category: "", categoryIcon: "");
 
   final List<WidgetBuilder> pages = [
     (context) => MyHomePage(title: 'home'),

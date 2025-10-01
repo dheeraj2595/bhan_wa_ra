@@ -9,6 +9,10 @@ class CategoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final notesByCategory = context.watch<NoteState>().notesByCategory;
+    final categories = notesByCategory.keys.toList();
+    final categoryEntries = notesByCategory.entries.toList();
+
     return Scaffold(
       body: Column(
         children: [
@@ -45,13 +49,22 @@ class CategoryPage extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: ListView.builder(
-                itemCount: context.read<NoteState>().notes.length,
+                itemCount: categoryEntries.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: Icon(Icons.access_alarm),
-                    title: Text(
-                      context.read<NoteState>().notes[index].category,
-                    ),
+                  String category = categoryEntries[index].key; // category name
+                  List<Note> notesInCategory =
+                      categoryEntries[index].value; // list of notes
+
+                  return ExpansionTile(
+                    title: Text(category),
+                    children: notesInCategory
+                        .map(
+                          (note) => ListTile(
+                            title: Text(note.title),
+                            subtitle: Text(note.content),
+                          ),
+                        )
+                        .toList(),
                   );
                 },
               ),

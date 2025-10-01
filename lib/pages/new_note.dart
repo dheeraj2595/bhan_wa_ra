@@ -16,6 +16,9 @@ class _NewNoteState extends State<NewNote> {
   @override
   Widget build(BuildContext context) {
     String selectedCategory = context.read<CategoryState>().selectedCategory;
+    String selectedCategoryIcon = context
+        .read<CategoryState>()
+        .selectedCategory;
     var titleController = context.read<PageChangeState>().titleController;
     var contentController = context.read<PageChangeState>().contentController;
 
@@ -106,6 +109,7 @@ class _NewNoteState extends State<NewNote> {
                         titleController.text,
                         contentController.document.toPlainText(),
                         selectedCategory,
+                        selectedCategoryIcon,
                       );
                     },
                     icon: Icon(Icons.note_alt_rounded),

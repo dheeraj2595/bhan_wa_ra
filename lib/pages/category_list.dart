@@ -35,7 +35,10 @@ class CategoryListPage extends StatelessWidget {
           ),
           onTap: () {
             if (context.read<PageChangeState>().selectionOfCategory == true) {
-              context.read<CategoryState>().thisCategory(cat.categoryName);
+              context.read<CategoryState>().thisCategory(
+                cat.categoryName,
+                cat.categoryIcon,
+              );
               context.read<PageChangeState>().selectionOfCategory = false;
               context.read<PageChangeState>().newNotePage();
             }

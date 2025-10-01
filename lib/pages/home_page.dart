@@ -1,4 +1,5 @@
 import 'package:bhan_wa_ra/note_state.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,12 +42,35 @@ class MyHomePage extends StatelessWidget {
                           elevation: 15,
                           color: const Color.fromARGB(255, 243, 240, 234),
                           child: Center(
-                            child: Text(
-                              noteState.notes[index].title,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                    MediaQuery.of(context).size.width * 0.05,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      noteState.notes[index].title,
+                                      style: TextStyle(
+                                        color: Colors.yellow[800],
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                            0.055,
+                                      ),
+                                    ),
+                                    Divider(),
+                                    Text(
+                                      noteState.notes[index].content,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize:
+                                            MediaQuery.of(context).size.width *
+                                            0.025,
+                                        overflow: TextOverflow.clip,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
