@@ -1,3 +1,4 @@
+import 'package:bhan_wa_ra/models/savednotes.dart';
 import 'package:bhan_wa_ra/pages/category_list.dart';
 import 'package:flutter/material.dart';
 import 'package:bhan_wa_ra/pages/home_page.dart';
@@ -5,6 +6,7 @@ import 'package:bhan_wa_ra/pages/categories.dart';
 import 'package:bhan_wa_ra/pages/vault.dart';
 import 'package:bhan_wa_ra/pages/new_note.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:hive/hive.dart';
 
 class Note {
   String title = "";
@@ -20,6 +22,28 @@ class Note {
   });
 }
 
+extension Notemapper on Note {
+  SavedNotes toSavedNotes() {
+    return SavedNotes(
+      title: title,
+      content: content,
+      category: this.category,
+      categoryIcon: categoryIcon,
+    );
+  }
+}
+
+extension SavedNoteMapper on SavedNotes {
+  Note toNote() {
+    return Note(
+      title: title,
+      content: content,
+      category: this.category,
+      categoryIcon: categoryIcon,
+    );
+  }
+}
+
 class category {
   String categoryName = "";
   String categoryIcon = "";
@@ -28,26 +52,50 @@ class category {
 }
 
 class NoteState extends ChangeNotifier {
+  late Box<SavedNotes> notesBox;
   List<Note> notes = [];
   List<category> categoriesUsed = [];
   Map<String, List<Note>> notesByCategory = {};
+
+  NoteState() {
+    notesBox = Hive.box<SavedNotes>('notes');
+    loadNotesFromHive();
+  }
+
+  void loadNotesFromHive() {
+    notes = notesBox.values.map((saved) => saved.toNote()).toList();
+    notesByCategory = getNotesByCategory(notes);
+    notifyListeners();
+  }
 
   void addNewNote(
     String title,
     String content,
     String category,
     String selectedCategoryIcon,
-  ) {
-    notes.add(
-      Note(
-        title: title,
-        content: content,
-        category: category,
-        categoryIcon: selectedCategoryIcon,
-      ),
+  ) async {
+    final note = Note(
+      title: title,
+      content: content,
+      category: category,
+      categoryIcon: selectedCategoryIcon,
     );
+
+    await notesBox.add(note.toSavedNotes());
+    loadNotesFromHive();
+
     notesByCategory = getNotesByCategory(notes);
     notifyListeners();
+  }
+
+  void deleteNoteAt(int index) async {
+    await notesBox.deleteAt(index);
+    loadNotesFromHive();
+  }
+
+  void updateNoteAt(int index, Note updatedNote) async {
+    await notesBox.putAt(index, updatedNote.toSavedNotes());
+    loadNotesFromHive();
   }
 
   Map<String, List<Note>> getNotesByCategory(List<Note> notes) {

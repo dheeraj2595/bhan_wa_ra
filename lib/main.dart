@@ -8,8 +8,23 @@ import 'package:bhan_wa_ra/note_state.dart';
 import 'package:bhan_wa_ra/pages/category_list.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'models/savednotes.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Set Hive storage directory
+  final dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+
+  // Register the adapter
+  Hive.registerAdapter(SavedNotesAdapter());
+
+  // Open a box
+  var box = await Hive.openBox<SavedNotes>('notes');
+
   runApp(
     MultiProvider(
       providers: [

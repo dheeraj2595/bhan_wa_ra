@@ -10,7 +10,6 @@ class CategoryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notesByCategory = context.watch<NoteState>().notesByCategory;
-    final categories = notesByCategory.keys.toList();
     final categoryEntries = notesByCategory.entries.toList();
 
     return Scaffold(
