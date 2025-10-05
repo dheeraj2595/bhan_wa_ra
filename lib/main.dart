@@ -11,6 +11,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'models/savednotes.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -80,103 +81,115 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final pageChange = context.watch<PageChangeState>();
     final selectedIndex = pageChange.selectedIndex;
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(
-          ' - भँवरा - ',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onSecondary,
-            fontFamily: 'Poppins',
-            fontSize: MediaQuery.of(context).size.width * 0.08,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (context.read<PageChangeState>().selectedIndex != 0) {
+          context.read<PageChangeState>().onItemTapped(0);
+        } else {
+          SystemNavigator.pop();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Text(
+            ' - भँवरा - ',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onSecondary,
+              fontFamily: 'Poppins',
+              fontSize: MediaQuery.of(context).size.width * 0.08,
+              fontWeight: FontWeight.bold,
+              fontStyle: FontStyle.italic,
+            ),
+            textAlign: TextAlign.left,
           ),
-          textAlign: TextAlign.left,
         ),
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Theme.of(context).colorScheme.onPrimary,
-                    Theme.of(context).colorScheme.primary,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.onPrimary,
+                      Theme.of(context).colorScheme.primary,
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Hive",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: MediaQuery.of(context).size.width * 0.08,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Hive",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: MediaQuery.of(context).size.width * 0.08,
+                    ),
                   ),
                 ),
               ),
-            ),
-            ListTile(
-              leading: CircleAvatar(child: Icon(Icons.sticky_note_2_outlined)),
-              title: Text("All notes"),
-              onTap: () {
-                pageChange.onItemTapped(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: CircleAvatar(child: Icon(Icons.category_outlined)),
-              title: Text("Categories"),
-              onTap: () {
-                pageChange.onItemTapped(1);
+              ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.sticky_note_2_outlined),
+                ),
+                title: Text("All notes"),
+                onTap: () {
+                  pageChange.onItemTapped(0);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: CircleAvatar(child: Icon(Icons.category_outlined)),
+                title: Text("Categories"),
+                onTap: () {
+                  pageChange.onItemTapped(1);
 
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: CircleAvatar(child: Icon(Icons.category_outlined)),
-              title: Text("All categories"),
-              onTap: () {
-                pageChange.onItemTapped(4);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: CircleAvatar(child: Icon(Icons.category_outlined)),
+                title: Text("All categories"),
+                onTap: () {
+                  pageChange.onItemTapped(4);
 
-                Navigator.pop(context);
-              },
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: CircleAvatar(child: Icon(Icons.lock_clock_outlined)),
+                title: Text("Vault"),
+                onTap: () {
+                  pageChange.onItemTapped(3);
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                leading: CircleAvatar(child: Icon(Icons.bar_chart_outlined)),
+                title: Text("Memory statistics"),
+              ),
+            ],
+          ),
+        ),
+        body: pageChange.pages[selectedIndex](context),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: selectedIndex > 2 ? 0 : selectedIndex,
+          onTap: pageChange.onItemTapped,
+          selectedItemColor: Colors.amber,
+          unselectedItemColor: Colors.grey,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.notes), label: "notes"),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.category_rounded),
+              label: "category",
             ),
-            ListTile(
-              leading: CircleAvatar(child: Icon(Icons.lock_clock_outlined)),
-              title: Text("Vault"),
-              onTap: () {
-                pageChange.onItemTapped(3);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: CircleAvatar(child: Icon(Icons.bar_chart_outlined)),
-              title: Text("Memory statistics"),
-            ),
+            BottomNavigationBarItem(icon: Icon(Icons.add), label: "New note"),
           ],
         ),
-      ),
-      body: pageChange.pages[selectedIndex](context),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: selectedIndex > 2 ? 0 : selectedIndex,
-        onTap: pageChange.onItemTapped,
-        selectedItemColor: Colors.amber,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.notes), label: "notes"),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.category_rounded),
-            label: "category",
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: "New note"),
-        ],
       ),
     );
   }

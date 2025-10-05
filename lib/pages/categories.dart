@@ -61,6 +61,12 @@ class CategoryPage extends StatelessWidget {
                           (note) => ListTile(
                             title: Text(note.title),
                             subtitle: Text(note.content),
+                            onTap: () {
+                              context.read<PageChangeState>().savedNotePage(
+                                note.title,
+                                note.content,
+                              );
+                            },
                           ),
                         )
                         .toList(),

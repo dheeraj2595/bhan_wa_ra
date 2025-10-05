@@ -40,38 +40,70 @@ class MyHomePage extends StatelessWidget {
                           margin: EdgeInsets.all(10.00),
                           elevation: 15,
                           color: const Color.fromARGB(255, 243, 240, 234),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      noteState.notes[index].title,
-                                      style: TextStyle(
-                                        color: Colors.yellow[800],
-                                        fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width *
-                                            0.055,
+                          child: Stack(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  context.read<PageChangeState>().savedNotePage(
+                                    noteState.notes[index].title,
+                                    noteState.notes[index].content,
+                                  );
+                                },
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            noteState.notes[index].title,
+                                            style: TextStyle(
+                                              color: Colors.yellow[800],
+                                              fontWeight: FontWeight.bold,
+                                              fontSize:
+                                                  MediaQuery.of(
+                                                    context,
+                                                  ).size.width *
+                                                  0.055,
+                                            ),
+                                          ),
+                                          Divider(),
+                                          Text(
+                                            noteState.notes[index].content,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                              fontSize:
+                                                  MediaQuery.of(
+                                                    context,
+                                                  ).size.width *
+                                                  0.025,
+                                              overflow: TextOverflow.clip,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Divider(),
-                                    Text(
-                                      noteState.notes[index].content,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width *
-                                            0.025,
-                                        overflow: TextOverflow.clip,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
+                              Positioned(
+                                right: 4,
+                                bottom: 4,
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    context.read<NoteState>().deleteNoteAt(
+                                      index,
+                                    );
+                                  },
+                                  label: Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.red[300],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },

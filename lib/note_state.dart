@@ -277,6 +277,16 @@ class PageChangeState extends ChangeNotifier {
 
   void newNotePage() {
     selectedIndex = 2;
+    notifyListeners();
+  }
+
+  void savedNotePage(title, content) {
+    selectedIndex = 2;
+    titleController.text = title;
+    contentController = QuillController(
+      document: Document()..insert(0, content),
+      selection: TextSelection.collapsed(offset: 0),
+    );
 
     notifyListeners();
   }
